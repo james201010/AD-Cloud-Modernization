@@ -1,0 +1,77 @@
+
+
+
+
+SELECT ENQUIRIES.CAR_ID, CARS.MODEL, CARS.DESCRIPTION, CARS.COLOUR, CARS.YEAR, CARS.PRICE, CARS.SUMMARY, ENQUIRIES.NAME, ENQUIRIES.COMMENT, MANUFACTURER.WEB, MANUFACTURER.EMAIL, ENQUIRIES.EMAIL, CARS.MANUFACTURER_ID, MANUFACTURER.NAME 
+
+FROM ENQUIRIES LEFT OUTER JOIN CARS ON ENQUIRIES.CAR_ID = CARS.CAR_ID RIGHT OUTER JOIN MANUFACTURER ON CARS.MANUFACTURER_ID = MANUFACTURER.MANUFACTURER_ID 
+
+WHERE CARS.SUMMARY LIKE '%Maximum%' AND CARS.DESCRIPTION LIKE '%Leather%' AND CARS.DESCRIPTION LIKE '%Pile%' ORDER BY CARS.PRICE ASC
+
+
+SELECT cashsummary.memberid, cashsummary.accountname, cashsummary.accountnumber, cashsummary.avalbalance, cashsummary.currentbalance, cashdetail.memberid, cashdetail.accountnumber, cashdetail.monthmulti, cashdetail.txndate, cashdetail.txndescription, cashdetail.txnamount, cashdetail.runbalance, cashdetail.txnorder
+
+FROM  cashsummary RIGHT OUTER JOIN cashdetail ON cashsummary.memberid = cashdetail.memberid
+
+WHERE cashdetail.txndescription LIKE '%SUNDRIES%' AND cashdetail.txndescription LIKE '%QUICKSTOP%' ORDER BY cashdetail.id ASC
+
+
+
+------
+
+
+SELECT cashsummary.memberid, cashsummary.accountname, cashsummary.accountnumber, cashsummary.avalbalance, cashsummary.currentbalance, cashdetail.memberid, cashdetail.accountnumber, cashdetail.monthmulti, cashdetail.txndate, cashdetail.txndescription, cashdetail.txnamount, cashdetail.runbalance, cashdetail.txnorder FROM  cashsummary RIGHT OUTER JOIN cashdetail ON cashsummary.memberid = cashdetail.memberid WHERE cashdetail.txndescription LIKE '%SUNDRIES%' AND cashdetail.txndescription LIKE '%QUICKSTOP%' ORDER BY cashdetail.id ASC
+
+
+
+
+
+--------------
+LOANS INSERT:
+
+
+
+
+-----------
+
+
+
+SELECT loansummary.memberid, loansummary.accountname, loansummary.accountnumber, loansummary.currentbalance, loansummary.paymentdueamt, loansummary.paymentduedate, loansummary.accounttype, loandetail.memberid, loandetail.accountnumber, loandetail.monthmulti, loandetail.txndate, loandetail.txndescription, loandetail.txnamount, loandetail.runbalance, loandetail.txnorder
+
+FROM  loansummary RIGHT OUTER JOIN loandetail ON loansummary.memberid = loandetail.memberid
+
+WHERE loandetail.txndescription LIKE '%SHARE2233-5%' AND loandetail.txndescription LIKE '%QY2TRANSFER%' ORDER BY loandetail.id ASC
+
+
+---------
+
+SELECT loansummary.memberid, loansummary.accountname, loansummary.accountnumber, loansummary.currentbalance, loansummary.paymentdueamt, loansummary.paymentduedate, loansummary.accounttype, loandetail.memberid, loandetail.accountnumber, loandetail.monthmulti, loandetail.txndate, loandetail.txndescription, loandetail.txnamount, loandetail.runbalance, loandetail.txnorder FROM  loansummary RIGHT OUTER JOIN loandetail ON loansummary.memberid = loandetail.memberid WHERE loandetail.txndescription LIKE '%SHARE2233-5%' AND loandetail.txndescription LIKE '%QY2TRANSFER%' ORDER BY loandetail.id ASC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

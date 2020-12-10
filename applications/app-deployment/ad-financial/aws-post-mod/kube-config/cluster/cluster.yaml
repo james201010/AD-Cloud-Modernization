@@ -1,0 +1,36 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: JRS-2f570-appd-cluster
+  region: us-west-2
+  version: "1.17"
+
+availabilityZones: ["us-west-2a", "us-west-2b"]
+
+managedNodeGroups:
+- name: nodegroup
+  instanceType: m5a.large
+  desiredCapacity: 2
+  ssh:
+    allow: true
+    publicKeyName: AppD-Cloud-Kickstart-AWS
+
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: appd-app-services
+      # if no namespace is set, "default" will be used;
+      # the namespace will be created if it doesn't exist already
+      # namespace: default
+      labels: {aws-usage: "application"}
+    attachPolicyARNs:
+    - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+    - "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+
+
+# To enable all of the control plane logs, uncomment below:
+# cloudWatch:
+#  clusterLogging:
+#    enableTypes: ["*"]

@@ -1,0 +1,59 @@
+
+SETUP STEPS:
+
+01) Install Java JDK 1.8
+02) Resize Disk on C9 instance *
+03) Install kubectl *
+04) Install eksctl *
+05) Install docker-compose *
+06) Download and install DB agent on C9 EC2 instance *
+07) Create EC2 security group for extenal access to RDS DB **
+08) Create RDS database with security group attached **
+09) Create three S3 buckets **
+10) Create two APM apps in Controller ***
+11) Create two BRUM apps in Controller ***
+12) Create two DB collectors in Controller ***
+13) Create RBAC User in Controller ***
+14) Create RBAC Role in Controller with correct permissions ***
+15) Add RBAC User in Controller to 'Server Monitoring User (Default)'' Role ***
+16) Add RBAC User in Controller to 'DB Monitoring User (Default)' Role ***
+17) Add RBAC User in Controller to Custom Role previously created ***
+18) Create EKS Cluster *
+19) Deploy application to EKS Cluster *
+20) Wait for application to initialize in EKS Cluster
+21) Deploy Machine agent to EKS Cluster *
+22) Deploy Cluster agent to EKS Cluster *
+23) Expose website front end with ELB in EKS Cluster **
+24) Deploy docker-compose application to local C9 instance *
+25) Create teardwown file
+
+Total Elapsed Time = 27 minutes : 50 seconds
+
+*   = Using Java Process Builder to execute shell script 
+**  = Using AWS Java SDK
+*** = Using Controller REST API
+
+
+
+TEARDOWN STEPS:
+
+01) Get Ids for Machine agents related to APM applications ***
+02) Stop docker-compose application running on local C9 instance *
+03) Delete EKS Cluster *
+04) Delete Machine agents related to APM apps in Controller ***
+05) Delete two APM apps in Controller ***
+06) Delete two BRUM apps in Controller ***
+07) Delete two DB collectors in Controller ***
+08) Delete RDS database **
+09) Delete three S3 buckets **
+10) Wait for EC2 security group for RDS DB to be released **
+11) Delete EC2 security group for RDS DB **
+12) Delete Cluster agent in Controller ***
+13) Delete RBAC User in Controller ***
+14) Delete RBAC Role in Controller ***  
+
+Total Elapsed Time = 9 minutes : 35 seconds
+
+*   = Using Java Process Builder to execute shell script 
+**  = Using AWS Java SDK
+*** = Using Controller REST API

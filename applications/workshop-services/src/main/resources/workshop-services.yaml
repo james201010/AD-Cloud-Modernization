@@ -1,0 +1,64 @@
+!!com.appdynamics.cloud.modern.config.ServicesConfig
+
+eventsServiceConfig:
+  eventsServiceEndpoint: "https://analytics.api.appdynamics.com:443"
+  eventsServiceApikey: ""
+  controllerGlobalAccount: ""
+  
+  
+analyticsEventsSources:
+  - schemaName: "loans_premod"
+    eventsSourceClass: "com.appdynamics.cloud.modern.analytics.LoanApprovalEventsSource"
+    publishEventsInterval: "5"  # publishEventsInterval (is in minutes)
+    hourlyEventsBatchSize: "258" 
+    configProperties:
+      - name: "milestone-1-percent"
+        value: "0.47"  # 0.65
+
+      - name: "milestone-2-percent"
+        value: "0.39"  # 0.58
+
+      - name: "milestone-3-percent"
+        value: "0.33"  # 0.52
+
+      - name: "milestone-4-percent"
+        value: "0.29"  # 0.46
+
+      - name: "milestone-5-percent"
+        value: "0.26"  # 0.41
+
+
+  - schemaName: "loans_postmod"
+    eventsSourceClass: "com.appdynamics.cloud.modern.analytics.LoanApprovalEventsSource"
+    publishEventsInterval: "5"
+    hourlyEventsBatchSize: "517"
+    configProperties:
+      - name: "milestone-1-percent"
+        value: "0.71"  # 0.82
+
+      - name: "milestone-2-percent"
+        value: "0.65"  # 0.77
+
+      - name: "milestone-3-percent"
+        value: "0.60"  # 0.72
+
+      - name: "milestone-4-percent"
+        value: "0.56"  # 0.68
+
+      - name: "milestone-5-percent"
+        value: "0.53"  # 0.62
+
+
+vaultInfo:
+  vaultHost: https://35.227.66.33
+  validateSsl: false
+  authStr: eyJwYXNzd29yZCI6IkMxc2MwMTIzIyJ9
+  uriPaths:
+    - name: auth
+      value: /v1/auth/userpass/login/cloud-team
+    - name: controller-info
+      value: /v1/kv/cloud-labs/controller-info
+    - name: controller-login-info
+      value: /v1/kv/cloud-labs/controller-login-info
+    - name: dbagent-s3-auth
+      value: /v1/kv/cloud-labs/dbagent-s3-auth
