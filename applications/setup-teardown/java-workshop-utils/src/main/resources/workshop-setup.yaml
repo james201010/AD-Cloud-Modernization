@@ -7,9 +7,6 @@ setupStepsFileName: "appd_workshop_setup.txt"
 cloudProvider: "aws"
 debugLogging: false
 
-# this is optional and typically used to stop the running 
-# application(s) and or delete a k8s cluster
-#
 # if machine agents are deployed, their ids must be collected
 # before the applications are stopped
 teardownScript: "/opt/appdynamics/workshopuser/terminateApps.sh"

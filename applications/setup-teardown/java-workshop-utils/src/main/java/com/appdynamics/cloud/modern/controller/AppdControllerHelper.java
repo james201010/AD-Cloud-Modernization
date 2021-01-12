@@ -51,7 +51,7 @@ public class AppdControllerHelper {
 	public static ControllerTaskResults createApmApp(ControllerTaskResults results, String appName, String appType) throws Throwable  {
 		logr.info(" - Creating APM Application : " + appName);
 		CNTRLR.createApmApplication(appName, appType, results);		
-		
+		logr.info(" - Finished Creating APM Application : " + appName);
 		return results;
 	}
 
@@ -59,6 +59,7 @@ public class AppdControllerHelper {
 	public static ControllerTaskResults createBrumApp(ControllerTaskResults taskResults, String appName) throws Throwable  {
 		logr.info(" - Creating BRUM Application : " + appName);
 		CNTRLR.createBrumApplication(appName, taskResults);
+		logr.info(" - Finished Creating BRUM Application : " + appName);
 		return taskResults;
 	}	
 	

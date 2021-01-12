@@ -364,9 +364,37 @@ public class AppdController {
 		logr.debug("Create BRUM Application JSON Response");
 		logr.debug(resp);
 		
-		String brumKey = getBrumAppKey(appName);
-		brumApp.appId = resObj.getId();
-		brumApp.eumKey = brumKey;
+		int retryBrumAppMax = 5;
+		boolean retryBrumAppSuccess = false;
+		
+		for (int brumRetryCntr = 0; brumRetryCntr < retryBrumAppMax; brumRetryCntr++) {
+			try {
+				
+				logr.info("   - Waiting for BRUM Application Creation ...");
+				
+				Thread.currentThread().sleep(3000);
+				
+				getBrumAppKey(appName, brumApp);
+				
+				
+				if (brumApp.appId > -1 && brumApp.eumKey != null && brumApp.eumKey.length() > 5) {
+					retryBrumAppSuccess = true;
+					break;
+				}
+				
+			} catch (Throwable e) {
+				if (brumRetryCntr == (retryBrumAppMax -1)) {
+					if (!retryBrumAppSuccess) {
+						e.printStackTrace();
+						throw e;
+					}
+					
+				}
+			}
+			
+		}
+		
+				
 		
 		taskResults.brumApps.add(brumApp);
 		
@@ -376,11 +404,11 @@ public class AppdController {
 		logr.debug("BRUM App Id = " + brumApp.appId);
 		logr.debug("BRUM App EUM Key = " + brumApp.eumKey);
 		
-		return resObj.getId();
+		return brumApp.appId;
 	    
 	}
 	
-	private String getBrumAppKey(String brumAppName) throws Throwable {		
+	private void getBrumAppKey(String brumAppName, BrumApp brumApp) throws Throwable {		
 		
 	    HttpGet httpReq = new HttpGet(getControllerBaseUrl() + "/controller/restui/eumApplications/getAllEumApplicationsData?time-range=last_1_hour.BEFORE_NOW.-1.-1.60");
 	 
@@ -414,13 +442,15 @@ public class AppdController {
 		for (int i = 0; i < resArray.length; i++) {
 			if (resArray[i].getName().equals(brumAppName)) {
 				eumAppKey = resArray[i].getAppKey();
-				
+				brumApp.eumKey = resArray[i].getAppKey();
+				brumApp.appId = resArray[i].getId();
+				return;
 			}
 		}		  
 		
-		logr.debug("EUM Key for BRUM App " + brumAppName + " = " + eumAppKey);
-		
-		return eumAppKey;
+		if (eumAppKey != null) {
+			logr.debug("EUM Key for BRUM App " + brumAppName + " = " + eumAppKey);
+		}
 	    
 	}
 	
