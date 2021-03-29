@@ -48,10 +48,10 @@ public class CloudHelper {
 		return instance;
 	}
 
-	public static CloudDBInstance createDBInstance(String instanceName, String instanceType, int instancePort, String instanceUser, String instancePassword, CloudSecurityGroup securityGroup) throws CloudDBException {
+	public static CloudDBInstance createDBInstance(String instanceName, String instanceSize, String instanceType, int instancePort, String instanceUser, String instancePassword, CloudSecurityGroup securityGroup) throws CloudDBException {
 		//logr.info("Creating Cloud Database Instance : " + instanceName);
 		CloudDBManager dbMgr = CloudProviderManager.getCloudDBManager(CLOUD_PROVIDER);
-		CloudDBInstance instance = dbMgr.createDBInstance(instanceName, instanceType, instancePort, instanceUser, instancePassword, securityGroup);
+		CloudDBInstance instance = dbMgr.createDBInstance(instanceName, instanceSize, instanceType, instancePort, instanceUser, instancePassword, securityGroup);
 		//logr.info("Finished Creating Cloud Database Instance : " + instanceName);
 		return instance;
 		

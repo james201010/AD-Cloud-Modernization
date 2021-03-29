@@ -25,27 +25,34 @@ public class AppdControllerHelper {
 	public static void initSetup(SetupConfig setupConfig, ControllerConfig controllerConfig, ControllerLoginConfig loginConfig) throws Throwable {
 		logr = new Logger(AppdControllerHelper.class.getSimpleName(), setupConfig.isDebugLogging());
 		logr.info(" - Initilizing Controller for Setup");
-		if (CNTRLR == null) {
+		//if (CNTRLR == null) {
 			CNTRLR = new AppdController(controllerConfig, loginConfig);
 			CNTRLR.initClientForSetup(setupConfig);
-		}
+		//}
 	}
 	
 	public static void initTeardown(TeardownConfig config, ControllerConfig controllerConfig, ControllerLoginConfig loginConfig) throws Throwable {
 		
 		logr = new Logger(AppdControllerHelper.class.getSimpleName());
 		logr.info(" - Initilizing Controller for Teardown");
-		if (CNTRLR == null) {
+		//if (CNTRLR == null) {
 			CNTRLR = new AppdController(controllerConfig, loginConfig);
 			CNTRLR.initClientForTeardown(config);
-		} else {
-			CNTRLR.initClientForTeardown(config);
-		}
+		//} else {
+			//CNTRLR.initClientForTeardown(config);
+		//}
 	}
 	
 	public static void closeClient() throws Throwable {
 		logr.info(" - Closing Controller Client");
 		CNTRLR.closeClient();	
+	}
+	
+	public static int createLicenseRule(LicenseRule rule, ControllerTaskResults taskResults) throws Throwable {
+		logr.info(" - Creating License Rule for User : " + taskResults.rbacUser.userName);
+		int result = CNTRLR.createLicenseRule(rule, taskResults);
+		logr.info(" - Finished Creating License Rule for User : " + taskResults.rbacUser.userName);
+		return result;
 	}
 	
 	public static ControllerTaskResults createApmApp(ControllerTaskResults results, String appName, String appType) throws Throwable  {
@@ -90,6 +97,11 @@ public class AppdControllerHelper {
 		logr.info(" - Adding RBAC User : " + rbacUser.userName + " to Default RBAC Roles");
 		CNTRLR.addDefaultRolesToUser(rbacUser, roleIds);
 	}	
+
+	public static void deleteLicenseRule(String licenseRequestId) throws Throwable {
+		CNTRLR.deleteLicenseRule(licenseRequestId);
+		logr.info("   - Finished Deleting License Rule");
+	}
 	
 	public static void deleteApmApplication(int appId) throws Throwable {
 		logr.info("     - Deleting APM Application : " + appId);

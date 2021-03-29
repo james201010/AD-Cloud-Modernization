@@ -56,7 +56,7 @@ public class AwsCloudDBManager implements CloudDBManager {
 	
 	
 	@Override
-	public CloudDBInstance createDBInstance(String instanceName, String instanceType, int instancePort, String instanceUser, String instancePassword, CloudSecurityGroup securityGroup) throws CloudDBException {
+	public CloudDBInstance createDBInstance(String instanceName, String instanceSize, String instanceType, int instancePort, String instanceUser, String instancePassword, CloudSecurityGroup securityGroup) throws CloudDBException {
 		instanceName = instanceName.toLowerCase();
 		try {
 			if (this.instances.containsKey(instanceName)) {
@@ -82,7 +82,12 @@ public class AwsCloudDBManager implements CloudDBManager {
 		        // req.setPort(3306);
 		        req.setPort(instancePort);
 		        
-		        req.setDBInstanceClass("db.r4.large");
+		        //req.setDBInstanceClass("db.r4.large");
+		        //req.setDBInstanceClass("db.t2.medium");
+		        //req.setDBInstanceClass("db.t2.small");
+		        req.setDBInstanceClass(instanceSize);
+		        
+		        
 		        req.setMultiAZ(false);
 		        
 		        // req.setMasterUsername("root");

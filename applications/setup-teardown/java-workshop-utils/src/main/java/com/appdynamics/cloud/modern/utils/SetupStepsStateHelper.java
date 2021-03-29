@@ -23,7 +23,9 @@ import com.appdynamics.cloud.modern.cloud.security.CloudSecurityGroup;
 import com.appdynamics.cloud.modern.cloud.storage.CloudStorageInstance;
 import com.appdynamics.cloud.modern.config.SetupConfig;
 import com.appdynamics.cloud.modern.config.SetupStepsState;
+import com.appdynamics.cloud.modern.config.Tag;
 import com.appdynamics.cloud.modern.config.Task;
+import com.appdynamics.cloud.modern.config.TaskExecution;
 import com.appdynamics.cloud.modern.config.TeardownConfig;
 import com.appdynamics.cloud.modern.controller.ApmApp;
 import com.appdynamics.cloud.modern.controller.BrumApp;
@@ -49,10 +51,138 @@ public class SetupStepsStateHelper implements ApplicationConstants {
 		
 	}
 
+	public static void setStepSequenceOnTasks(SetupConfig setupConfig) throws Throwable {
+		
+		List<TaskExecution> stepTasks = setupConfig.getTaskExecutionOrder();
+		
+		int lastStepTrigger = 100;
+		int nextStepTrigger = 110;
+		
+		
+		for (TaskExecution te : stepTasks) {
+			
+			switch (te.getTaskType()) {
+			
+			case VADWRKSHP_TASK_EXEC_TYPE_SHELL:
+				
+				List<Task> shellTasks = setupConfig.getShellTasks();
+				if (shellTasks != null && !shellTasks.isEmpty()) {
+					for (Task task : shellTasks) {
+						if (task.getTaskName().equals(te.getTaskName())) {
+							
+							SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
+							logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+							
+							lastStepTrigger = lastStepTrigger + 10;
+							nextStepTrigger = nextStepTrigger + 10;
+						}
+					}
+				}	
+				break;
+
+			case VADWRKSHP_TASKS_EXEC_TYPE_CLOUD:
+				
+				List<Task> cloudTasks = setupConfig.getCloudTasks();
+				if (cloudTasks != null && !cloudTasks.isEmpty()) {
+					for (Task task : cloudTasks) {
+						
+						SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
+						logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+						
+						lastStepTrigger = lastStepTrigger + 10;
+						nextStepTrigger = nextStepTrigger + 10;						
+					}
+				}				
+				break;
+
+			case VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER_INIT:
+				
+				List<Task> coninitTasks = setupConfig.getControllerInitTasks();
+				if (coninitTasks != null && !coninitTasks.isEmpty()) {
+					for (Task task : coninitTasks) {
+						
+						SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
+						logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+						
+						lastStepTrigger = lastStepTrigger + 10;
+						nextStepTrigger = nextStepTrigger + 10;						
+					}
+				}
+				break;
+				
+			case VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER:
+
+				List<Task> connTasks = setupConfig.getControllerTasks();
+				if (connTasks != null && !connTasks.isEmpty()) {
+					for (Task task : connTasks) {
+						
+						SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
+						logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+						
+						lastStepTrigger = lastStepTrigger + 10;
+						nextStepTrigger = nextStepTrigger + 10;						
+					}
+				}
+				break;
+				
+				
+			default:
+				break;
+			}
+			
+		}
+		
+	}
+	
+	private static void addStepTriggerTags(Task task, int lastStepTrigger, int nextStepTrigger) throws Throwable {
+		
+		List<Tag> inTags = task.getInputTags();
+		if (inTags == null) {
+			inTags = new ArrayList<Tag>();
+			task.setInputTags(inTags);
+		} else {
+			
+			Tag lTag = null;
+			for(Tag iTag : inTags) {
+				if (iTag.getTagKey().equals(VADWRKSHP_LAST_SETUP_STEP_TRIGGER)) {
+					lTag = iTag;
+				}
+			}
+			if (lTag != null) {
+				inTags.remove(lTag);
+			}
+			
+			Tag nTag = null;
+			for(Tag iTag : inTags) {
+				if (iTag.getTagKey().equals(VADWRKSHP_NEXT_SETUP_STEP_TRIGGER)) {
+					nTag = iTag;
+				}
+			}
+			if (nTag != null) {
+				inTags.remove(nTag);
+			}
+			
+
+		}
+		
+		
+		Tag lastTag = new Tag();
+		lastTag.setTagKey(VADWRKSHP_LAST_SETUP_STEP_TRIGGER);
+		lastTag.setTagValue("" + lastStepTrigger);
+		
+		inTags.add(lastTag);
+		
+		Tag nextTag = new Tag();
+		nextTag.setTagKey(VADWRKSHP_NEXT_SETUP_STEP_TRIGGER);
+		nextTag.setTagValue("" + nextStepTrigger);
+		
+		inTags.add(nextTag);
+		
+	}
+	
 	public static void saveSuccessfulTaskCompletion(Task task, SetupConfig setupConfig, ControllerTaskResults connResults, CloudTaskResults cloudResults, ShellTaskResults shellResults) throws Throwable {
 		
 		SetupStepsStateHelper.saveSetupStepsState(setupConfig, connResults, cloudResults, shellResults);
-		SetupStepsStateHelper.createTeardownFile(setupConfig, cloudResults, connResults, shellResults);
 		SetupStepsStateHelper.createTeardownFile(setupConfig, cloudResults, connResults, shellResults);
 		StringUtils.saveStringAsFile(setupConfig.getSetupProgressDirectory() + "/" + setupConfig.getSetupStepsFileName(), task.getNextSetupStepTrigger());
 		ADWorkshopUtils.LAST_SETUP_STEP_COMPLETED = task.getNextSetupStepTrigger();
@@ -82,7 +212,7 @@ public class SetupStepsStateHelper implements ApplicationConstants {
 
 	}
 	
-	public static void saveSetupStepsState(SetupConfig setupConfig, ControllerTaskResults connResults, CloudTaskResults cloudResults, ShellTaskResults shellResults) throws Throwable {
+	private static void saveSetupStepsState(SetupConfig setupConfig, ControllerTaskResults connResults, CloudTaskResults cloudResults, ShellTaskResults shellResults) throws Throwable {
 		
 		String setupStepsFilePath = setupConfig.getSetupProgressDirectory() + "/" + ApplicationConstants.ADWRKSHP_TASK_RESULTS_STATE_FILE;
 		
@@ -114,6 +244,9 @@ public class SetupStepsStateHelper implements ApplicationConstants {
 
 		if (conResults != null) {
 			
+			if (conResults.licenseRule != null) {
+				tdConf.setLicenseRequestId(conResults.licenseRule.requestId);
+			}
 			if (conResults.rbacUser != null) {
 				tdConf.setUserId(conResults.rbacUser.userId);
 			}

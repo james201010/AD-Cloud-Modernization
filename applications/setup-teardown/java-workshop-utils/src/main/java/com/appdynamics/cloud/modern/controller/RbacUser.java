@@ -19,7 +19,7 @@ public class RbacUser implements Serializable {
 	public String userName;
 	public String userPwd;
 	public String email;
-	public String accessKey;
+	//public String accessKey;
 	
 
 }

@@ -26,6 +26,7 @@ public class SetupConfig implements Serializable {
 	private String cloudProvider;
 	private List<Template> templates;
 	private List<Task> shellTasks;
+	private List<Task> controllerInitTasks;
 	private List<Task> controllerTasks;
 	private List<Task> cloudTasks;
 	private VaultInfo vaultInfo;
@@ -61,6 +62,14 @@ public class SetupConfig implements Serializable {
 
 	public void setTeardownFilePath(String teardownFilePath) {
 		this.teardownFilePath = teardownFilePath;
+	}
+
+	public List<Task> getControllerInitTasks() {
+		return controllerInitTasks;
+	}
+
+	public void setControllerInitTasks(List<Task> controllerInitTasks) {
+		this.controllerInitTasks = controllerInitTasks;
 	}
 
 	public List<Task> getControllerTasks() {

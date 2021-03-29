@@ -32,6 +32,7 @@ import com.appdynamics.cloud.modern.controller.BrumApp;
 import com.appdynamics.cloud.modern.controller.ControllerTaskResults;
 import com.appdynamics.cloud.modern.controller.DBCollector;
 import com.appdynamics.cloud.modern.controller.Dashboard;
+import com.appdynamics.cloud.modern.controller.LicenseRule;
 import com.appdynamics.cloud.modern.controller.RbacUser;
 import com.appdynamics.cloud.modern.controller.json.MachineAgentListResponse;
 import com.appdynamics.cloud.modern.shell.ShellHelper;
@@ -65,6 +66,101 @@ public class ADWorkshopUtils implements ApplicationConstants {
 		
 	}
 
+	private static void _testLicenseRule() throws Throwable {
+		
+		String confPath = System.getProperty(ADWRKSHP_UTILS_CONF_KEY);
+		Yaml yaml = new Yaml(new Constructor(SetupConfig.class));
+		InputStream inputStream = StringUtils.getFileAsStream(confPath);
+		
+		//TeardownConfig conf = yaml.load(inputStream);
+		SetupConfig conf = yaml.load(inputStream);
+		
+		WorkshopVault vault = new WorkshopVault(conf.getVaultInfo());
+		Gson gson = new Gson();
+				
+        ControllerConfig controllerConfig = gson.fromJson(gson.toJson(vault.getVaultSecret(null, "controller-info")), ControllerConfig.class);
+        ControllerLoginConfig loginConfig = gson.fromJson(gson.toJson(vault.getVaultSecret(null, "controller-login-info")), ControllerLoginConfig.class);	
+
+        logr.info("" + controllerConfig.getControllerSslEnabled());
+        
+		String labUserKey = System.getProperty(ADWRKSHP_LABUSER_KEY_PREFIX);
+		
+		ControllerTaskResults controllerResults = new ControllerTaskResults();
+		
+		RbacUser labUser = generateLabUser(labUserKey, controllerConfig, controllerResults);
+		
+		String labUserId = labUser.userName;
+		
+		CloudTaskResults cloudResults = new CloudTaskResults();
+		ShellTaskResults shellResults = new ShellTaskResults();
+		
+		
+//		List<TaskExecution> execTasks = SETUP_CONF.getTaskExecutionOrder();
+//		
+//		for (TaskExecution exec : execTasks) {
+//			
+//			switch (exec.getTaskType()) {
+//			//case VADWRKSHP_TASK_EXEC_TYPE_SHELL:
+//				
+//				// PROCESS SHELL TASK
+//				//processShellTask(SETUP_CONF, exec.getTaskName(), controllerConfig, controllerResults, cloudResults, shellResults);
+//				//break;
+//
+//				
+//			//case VADWRKSHP_TASKS_EXEC_TYPE_CLOUD:
+//				// PROCESS CLOUD TASKS
+//				//processCloudTasks(SETUP_CONF, controllerConfig, loginConfig, controllerResults, cloudResults, shellResults);
+//				
+//				//break;
+//
+//			//case VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER:
+//				// PROCESS CONTROLLER TASKS
+//				//processControllerTasks(SETUP_CONF, controllerConfig, loginConfig, controllerResults, cloudResults, shellResults);
+//				
+//				// PROCESS ANY REMAINING TAGS
+//				//processRemainingTags(SETUP_CONF, labUserId);
+//				
+//				// FINAL TEMPLATE PROCESSING AND FILE OUTPUT
+//				//processTemplateOutputFiles(SETUP_CONF);
+//				
+//				//break;
+//				
+//			default:
+//				break;
+//			}
+//			
+//		}
+        
+		//AppdControllerHelper.initTeardown(conf, controllerConfig, loginConfig);
+		AppdControllerHelper.initSetup(conf, controllerConfig, loginConfig);
+
+		LicenseRule lRule = new LicenseRule();
+		lRule.requestId = UUID.randomUUID().toString();
+		lRule.licenseKey = UUID.randomUUID().toString();
+		lRule.numberOfApm = 24;
+		lRule.numberOfMA = 8;
+		lRule.numberOfSim = 8;
+		lRule.numberOfNet = 8;
+		lRule.ruleName = labUser.userName + "-LicenseRule";
+		
+		logr.info(" - License Rule RequestId = " + lRule.requestId);
+		logr.info(" - License Rule LicenseKey = " + lRule.licenseKey);
+		
+		int retCode = AppdControllerHelper.createLicenseRule(lRule, controllerResults);
+		
+		logr.info(" - License Rule Create Result = " + retCode);
+		
+		//MachineAgentListResponse maList = AppdControllerHelper.getMachineAgentListForApmApps(conf.getApmApps());
+		//AppdControllerHelper.deleteMachineAgents(maList);
+		//if (conf.getClusterAgentName() != null) {
+			//AppdControllerHelper.deleteClusterAgent(conf.getClusterAgentName());
+		//}
+		
+		
+		
+		AppdControllerHelper.closeClient();		
+	}
+	
 	public static void main(String[] args) {
 		
 		
@@ -130,86 +226,9 @@ public class ADWorkshopUtils implements ApplicationConstants {
 
 			case ADWRKSHP_UTILS_ACTION_TEST:
 
-				String confPath = System.getProperty(ADWRKSHP_UTILS_CONF_KEY);
-				Yaml yaml = new Yaml(new Constructor(SetupConfig.class));
-				InputStream inputStream = StringUtils.getFileAsStream(confPath);
-				
-				//TeardownConfig conf = yaml.load(inputStream);
-				SetupConfig conf = yaml.load(inputStream);
-				
-				WorkshopVault vault = new WorkshopVault(conf.getVaultInfo());
-				Gson gson = new Gson();
-						
-		        ControllerConfig controllerConfig = gson.fromJson(gson.toJson(vault.getVaultSecret(null, "controller-info")), ControllerConfig.class);
-		        ControllerLoginConfig loginConfig = gson.fromJson(gson.toJson(vault.getVaultSecret(null, "controller-login-info")), ControllerLoginConfig.class);	
 
-		        logr.info("" + controllerConfig.getControllerSslEnabled());
-		        
-				String labUserKey = System.getProperty(ADWRKSHP_LABUSER_KEY_PREFIX);
+				_testLicenseRule();
 				
-				ControllerTaskResults controllerResults = new ControllerTaskResults();
-				
-				RbacUser labUser = generateLabUser(labUserKey, controllerConfig, controllerResults);
-				
-				String labUserId = labUser.userName;
-				
-				CloudTaskResults cloudResults = new CloudTaskResults();
-				ShellTaskResults shellResults = new ShellTaskResults();
-				
-				
-				List<TaskExecution> execTasks = SETUP_CONF.getTaskExecutionOrder();
-				
-				for (TaskExecution exec : execTasks) {
-					
-					switch (exec.getTaskType()) {
-					case VADWRKSHP_TASK_EXEC_TYPE_SHELL:
-						
-						// PROCESS SHELL TASK
-						//processShellTask(SETUP_CONF, exec.getTaskName(), controllerConfig, controllerResults, cloudResults, shellResults);
-						break;
-
-						
-					//case VADWRKSHP_TASKS_EXEC_TYPE_CLOUD:
-						// PROCESS CLOUD TASKS
-						//processCloudTasks(SETUP_CONF, controllerConfig, loginConfig, controllerResults, cloudResults, shellResults);
-						
-						//break;
-
-					//case VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER:
-						// PROCESS CONTROLLER TASKS
-						//processControllerTasks(SETUP_CONF, controllerConfig, loginConfig, controllerResults, cloudResults, shellResults);
-						
-						// PROCESS ANY REMAINING TAGS
-						//processRemainingTags(SETUP_CONF, labUserId);
-						
-						// FINAL TEMPLATE PROCESSING AND FILE OUTPUT
-						//processTemplateOutputFiles(SETUP_CONF);
-						
-						//break;
-						
-					default:
-						break;
-					}
-					
-				}
-		    
-		        
-		        
-		        
-		        
-		        //logr.info("" + loginConfig.);
-		        
-				//AppdControllerHelper.initTeardown(conf, controllerConfig, loginConfig);
-
-				//MachineAgentListResponse maList = AppdControllerHelper.getMachineAgentListForApmApps(conf.getApmApps());
-				//AppdControllerHelper.deleteMachineAgents(maList);
-				
-				//if (conf.getClusterAgentName() != null) {
-					//AppdControllerHelper.deleteClusterAgent(conf.getClusterAgentName());
-				//}
-				
-				//AppdControllerHelper.closeClient();
-
 				
 				break;
 				
@@ -370,6 +389,10 @@ public class ADWorkshopUtils implements ApplicationConstants {
 			AppdControllerHelper.deleteClusterAgent(conf.getClusterAgentName());
 		}
 
+		logr.info("   - Deleting License Rule");
+		if (conf.getLicenseRequestId() != null) {
+			AppdControllerHelper.deleteLicenseRule(conf.getLicenseRequestId());;
+		}
 		
 		logr.info("   - Deleting RBAC User");
 		if (conf.getUserId() != null) {
@@ -440,6 +463,8 @@ public class ADWorkshopUtils implements ApplicationConstants {
 		
 		List<TaskExecution> execTasks = SETUP_CONF.getTaskExecutionOrder();
 		
+		SetupStepsStateHelper.setStepSequenceOnTasks(SETUP_CONF);
+		
 		for (TaskExecution exec : execTasks) {
 			
 			switch (exec.getTaskType()) {
@@ -455,7 +480,13 @@ public class ADWorkshopUtils implements ApplicationConstants {
 				processCloudTasks(SETUP_CONF, controllerConfig, loginConfig, controllerResults, cloudResults, shellResults);
 				
 				break;
-
+				
+			case VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER_INIT:
+				// PROCESS CONTROLLER INIT TASKS
+				processControllerInitTasks(SETUP_CONF, controllerConfig, loginConfig, controllerResults, cloudResults, shellResults);
+				
+				break;
+				
 			case VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER:
 				// PROCESS CONTROLLER TASKS
 				processControllerTasks(SETUP_CONF, controllerConfig, loginConfig, controllerResults, cloudResults, shellResults);
@@ -552,7 +583,7 @@ public class ADWorkshopUtils implements ApplicationConstants {
 								switch (shellArgs[i]) {
 								case VADWRKSHP_ACCT_ACCESS_KEY:
 									
-									processedArgs[i] = controllerConfig.getControllerAccessKey();
+									processedArgs[i] = connResults.licenseRule.licenseKey;
 									
 									break;
 
@@ -668,7 +699,7 @@ public class ADWorkshopUtils implements ApplicationConstants {
 			//logr.carriageReturn();
 			
 			success = ShellHelper.downloadDBAgent(setupConfig, dbAgentHomeDir);
-			success = ShellHelper.launchDBAgent(dbAgentHostname, controllerConfig, dbAgentHomeDir, dbAgentName, shellResults);
+			success = ShellHelper.launchDBAgent(dbAgentHostname, controllerConfig, dbAgentHomeDir, dbAgentName, connResults, shellResults);
 			
 			//logr.carriageReturn();
 			
@@ -759,6 +790,7 @@ public class ADWorkshopUtils implements ApplicationConstants {
 
 			try {
 				String instanceName = "";
+				String instanceSize = "";
 				String instanceType = "";
 				int instancePort = 3306;
 				String instanceUser = "";
@@ -778,6 +810,10 @@ public class ADWorkshopUtils implements ApplicationConstants {
 						instanceName = instanceName.toLowerCase();
 
 						setInputTagValueResult(tag, instanceName);
+						break;
+
+					case VADWRKSHP_CLOUD_DB_INST_SIZE:
+						instanceSize = tag.getTagValue();
 						break;
 
 					case VADWRKSHP_CLOUD_DB_INST_TYPE:
@@ -817,7 +853,7 @@ public class ADWorkshopUtils implements ApplicationConstants {
 					
 				}
 				
-				CloudDBInstance cdbInst = CloudHelper.createDBInstance(instanceName, instanceType, instancePort, instanceUser, instancePassword, group);	
+				CloudDBInstance cdbInst = CloudHelper.createDBInstance(instanceName, instanceSize, instanceType, instancePort, instanceUser, instancePassword, group);	
 				cloudResults.dbInstances.add(cdbInst);
 				
 				setInputTagValueResult(dbInputTag, cdbInst.getInstanceEndpoint());
@@ -981,6 +1017,65 @@ public class ADWorkshopUtils implements ApplicationConstants {
 		
 		switch (task.getTaskType()) {
 		
+		case CONTROLLER_TASK_CREATE_LICENSE_RULE:
+			
+			try {
+			
+				List<Tag> lrInputTags = task.getInputTags();
+				
+				LicenseRule lRule = new LicenseRule();
+				
+				
+				for (Tag tag : lrInputTags) {
+					
+					switch (tag.getTagKey()) {
+					
+					case VADWRKSHP_LICENSE_RULE_NAME:
+						lRule.ruleName = getInputTagValue(tag, connResults.rbacUser.userName);
+						break;
+
+					case VADWRKSHP_LICENSE_RULE_NBR_APM:
+						lRule.numberOfApm = Integer.parseInt(tag.getTagValue());
+						break;
+
+					case VADWRKSHP_LICENSE_RULE_NBR_MA:
+						lRule.numberOfMA = Integer.parseInt(tag.getTagValue());
+						break;
+
+					case VADWRKSHP_LICENSE_RULE_NBR_SIM:
+						lRule.numberOfSim = Integer.parseInt(tag.getTagValue());
+						break;
+
+					case VADWRKSHP_LICENSE_RULE_NBR_NET:
+						lRule.numberOfNet = Integer.parseInt(tag.getTagValue());
+						break;
+						
+					default:
+						
+						break;
+					}
+					
+				}
+				
+				lRule.requestId = UUID.randomUUID().toString();
+				lRule.licenseKey = UUID.randomUUID().toString();
+
+				int retCode = AppdControllerHelper.createLicenseRule(lRule, connResults);
+				
+				if (retCode != 200) {
+					throw new Exception("Failed to create license rule for user " + connResults.rbacUser.userName);
+				}
+				
+				connResults.licenseRule = lRule;
+				
+				success = true;
+				
+			} catch (Throwable ex) {
+				ex.printStackTrace();
+			}
+			
+			break;
+			
 		case CONTROLLER_TASK_CREATE_APM_APP:
 			
 			try {
@@ -993,6 +1088,13 @@ public class ADWorkshopUtils implements ApplicationConstants {
 				for (Tag tag : apmInputTags) {
 					
 					switch (tag.getTagKey()) {
+					case VADWRKSHP_APM_APP_NAME:
+
+						apmAppNameKey = VADWRKSHP_APM_APP_NAME;
+						apmAppName = getInputTagValue(tag, connResults.rbacUser.userName);
+						
+						break;
+
 					case VADWRKSHP_APM_APP_NAME_POST:
 
 						apmAppNameKey = VADWRKSHP_APM_APP_NAME_POST;
@@ -1013,15 +1115,12 @@ public class ADWorkshopUtils implements ApplicationConstants {
 						tag.setTagValueResult(apmAppType);
 						
 						break;
-
-						
+					
+					
 					default:
-						
-						apmAppNameKey = tag.getTagKey();
-						apmAppName = getInputTagValue(tag, connResults.rbacUser.userName);
-						
 						break;
 					}
+					
 					
 				}
 				
@@ -1129,7 +1228,7 @@ public class ADWorkshopUtils implements ApplicationConstants {
 				
 				processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_CONTROLLER_ACCT_NAME, controllerConfig.getControllerAccount());
 				
-				processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_ACCT_ACCESS_KEY, controllerConfig.getControllerAccessKey());
+				processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_ACCT_ACCESS_KEY, connResults.licenseRule.licenseKey);
 				
 				processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_LABUSER_KEY, connResults.rbacUser.userName);
 				
@@ -1334,7 +1433,37 @@ public class ADWorkshopUtils implements ApplicationConstants {
 		return result;		
 		
 	}
+
+	private static void processControllerInitTasks(SetupConfig setupConfig, ControllerConfig controllerConfig, ControllerLoginConfig loginConfig, 
+			ControllerTaskResults connResults, CloudTaskResults cloudResults, ShellTaskResults shellResults) throws Throwable {
+		
+		AppdControllerHelper.initSetup(setupConfig, controllerConfig, loginConfig);
+		
+		List<Task> tasks = setupConfig.getControllerInitTasks();
+		
+		for (Task task : tasks) {
+			
+		
+			boolean success = false;
+			
+			if (task.shouldExecute(LAST_SETUP_STEP_COMPLETED)) {
+				
+				success = processControllerTask(setupConfig, task, controllerConfig, connResults, cloudResults, shellResults);
+				
+				if (success) {
+					SetupStepsStateHelper.saveSuccessfulTaskCompletion(task, setupConfig, connResults, cloudResults, shellResults);
+				} else {
+					logr.error(BEGIN_TASK_ERROR_MSG + task.getTaskName() + END_TASK_ERROR_MSG);
+					System.exit(1);
+				}
+				
+			}
+			
+		
+		}
 	
+		AppdControllerHelper.closeClient();
+	}	
 	
 	private static void processControllerTasks(SetupConfig setupConfig, ControllerConfig controllerConfig, ControllerLoginConfig loginConfig, 
 			ControllerTaskResults connResults, CloudTaskResults cloudResults, ShellTaskResults shellResults) throws Throwable {
@@ -1386,7 +1515,7 @@ public class ADWorkshopUtils implements ApplicationConstants {
 		user.userName = labUserKey + labUserPwdSuffix.substring(0, 4);
 		user.userPwd = user.userName + labUserPwdSuffix.substring(4, 7);
 		user.email = user.userName + "@email.com";
-		user.accessKey = controllerConfig.getControllerAccessKey();
+		//user.accessKey = controllerConfig.getControllerAccessKey();
 		
 		controllerResults.rbacUser = user;
 		

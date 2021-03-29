@@ -20,6 +20,7 @@ public class SetupStepsState implements Serializable {
 	public CloudTaskResults cloudTaskResults;
 	public ControllerTaskResults controllerTaskResults;
 	
+	
 	/**
 	 * 
 	 */

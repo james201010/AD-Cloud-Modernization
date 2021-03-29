@@ -41,6 +41,7 @@ public interface ApplicationConstants extends Serializable {
 	// Task Execution Order Types
 	public static final String VADWRKSHP_TASK_EXEC_TYPE_SHELL = "SHELL_TASK";
 	public static final String VADWRKSHP_TASKS_EXEC_TYPE_CLOUD = "CLOUD_TASKS";
+	public static final String VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER_INIT = "CONTROLLER_INIT_TASKS";
 	public static final String VADWRKSHP_TASKS_EXEC_TYPE_CONTROLLER = "CONTROLLER_TASKS";
 	
 	
@@ -58,15 +59,23 @@ public interface ApplicationConstants extends Serializable {
 	public static final String VADWRKSHP_CONTROLLER_SSL_ENABLED = "@[ADWRKSHP_CONTROLLER_SSL_ENABLED]";
 	public static final String VADWRKSHP_ACCT_ACCESS_KEY = "@[ADWRKSHP_ACCT_ACCESS_KEY]";
 	public static final String VADWRKSHP_LABUSER_PWD = "@[ADWRKSHP_LABUSER_PWD]";
+	
+	public static final String VADWRKSHP_LICENSE_RULE_NAME = "@[ADWRKSHP_LICENSE_RULE_NAME]";
+	public static final String VADWRKSHP_LICENSE_RULE_NBR_APM = "@[ADWRKSHP_LICENSE_RULE_NBR_APM]";
+	public static final String VADWRKSHP_LICENSE_RULE_NBR_MA = "@[ADWRKSHP_LICENSE_RULE_NBR_MA]";
+	public static final String VADWRKSHP_LICENSE_RULE_NBR_SIM = "@[ADWRKSHP_LICENSE_RULE_NBR_SIM]";
+	public static final String VADWRKSHP_LICENSE_RULE_NBR_NET = "@[ADWRKSHP_LICENSE_RULE_NBR_NET]";
+	
+	
 	public static final String VADWRKSHP_EUM_APP_KEY = "@[ADWRKSHP_EUM_APP_KEY]";
 	public static final String VADWRKSHP_EUM_APP_KEY_PRE = "@[ADWRKSHP_EUM_APP_KEY_PRE]";
 	public static final String VADWRKSHP_EUM_APP_KEY_POST = "@[ADWRKSHP_EUM_APP_KEY_POST]";
-	
 	public static final String VADWRKSHP_EUM_APP_NAME_PFX = "@[ADWRKSHP_EUM_APP_NAME";
 	
 	public static final String VADWRKSHP_CLOUD_REGION = "@[ADWRKSHP_CLOUD_REGION]";
 	public static final String VADWRKSHP_CLOUD_MODE = "@[ADWRKSHP_CLOUD_MODE]";
 	
+	public static final String VADWRKSHP_APM_APP_NAME = "@[ADWRKSHP_APM_APP_NAME]";
 	public static final String VADWRKSHP_APM_APP_NAME_POST = "@[ADWRKSHP_APM_APP_NAME_POST]";
 	public static final String VADWRKSHP_APM_APP_NAME_PRE = "@[ADWRKSHP_APM_APP_NAME_PRE]";
 	public static final String VADWRKSHP_APM_APP_TYPE = "@[ADWRKSHP_APM_APP_TYPE]";
@@ -78,6 +87,7 @@ public interface ApplicationConstants extends Serializable {
 	public static final String VADWRKSHP_CLOUD_DB_INST_NAME = "@[ADWRKSHP_CLOUD_DB_INST_NAME]";
 
 	public static final String VADWRKSHP_CLOUD_DB_INST_TYPE = "@[ADWRKSHP_CLOUD_DB_INST_TYPE]";
+	public static final String VADWRKSHP_CLOUD_DB_INST_SIZE = "@[ADWRKSHP_CLOUD_DB_INST_SIZE]";
 	public static final String VADWRKSHP_CLOUD_DB_INST_PORT = "@[ADWRKSHP_CLOUD_DB_INST_PORT]";
 	public static final String VADWRKSHP_CLOUD_DB_INST_USER = "@[ADWRKSHP_CLOUD_DB_INST_USER]";
 	public static final String VADWRKSHP_CLOUD_DB_INST_PWD = "@[ADWRKSHP_CLOUD_DB_INST_PWD]";
@@ -107,6 +117,7 @@ public interface ApplicationConstants extends Serializable {
 	
 	
 	// Controller Task Types
+	public static final String CONTROLLER_TASK_CREATE_LICENSE_RULE = "CONTROLLER_TASK_CREATE_LICENSE_RULE";
 	public static final String CONTROLLER_TASK_CREATE_APM_APP = "CONTROLLER_TASK_CREATE_APM_APP";
 	public static final String CONTROLLER_TASK_CREATE_BRUM_APP = "CONTROLLER_TASK_CREATE_BRUM_APP";
 	public static final String CONTROLLER_TASK_CREATE_RBAC_USER = "CONTROLLER_TASK_CREATE_RBAC_USER";

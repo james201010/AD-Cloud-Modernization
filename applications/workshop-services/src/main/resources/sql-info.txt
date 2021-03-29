@@ -1,0 +1,44 @@
+
+
+DROP DATABASE IF EXISTS adwrkshps_trkr;
+
+CREATE DATABASE adwrkshps_trkr;
+
+USE adwrkshps_trkr;
+
+CREATE TABLE `adwrkshps_trkr`.`workshop_instances` (
+  `instid` INT NOT NULL,
+  `wrkshp_name` VARCHAR(230) NOT NULL,
+  `wrkshp_category` VARCHAR(180) NOT NULL,
+  `cloud_category` VARCHAR(100) NOT NULL COMMENT 'Possible values: aws, azure, gcp, none, multi',
+  `wrkshp_userid` VARCHAR(80) NOT NULL,
+  `wrkshp_username` VARCHAR(255) NULL,
+  `wrkshp_ipaddr` VARCHAR(255) NULL,
+  `wrkshp_createdate` TIMESTAMP NOT NULL,
+  `wrkshp_lastupdate` TIMESTAMP NOT NULL,
+  `wrkshp_firststep` VARCHAR(45) NOT NULL,
+  `wrkshp_laststep` VARCHAR(45) NOT NULL,
+  `wrkshp_teardwndate` TIMESTAMP NULL,
+  `wrkshp_teardwnfinish` VARCHAR(5) NOT NULL DEFAULT 'false',
+  `wrkshp_autoteardate` TIMESTAMP NULL,
+  `wrkshp_autotearfinish` VARCHAR(5) NOT NULL DEFAULT 'false',
+  `teardown_yaml` TEXT NULL,
+  `rec_timesupdated` INT NOT NULL DEFAULT 1,
+  `wrkshp_stepsincrmnt` INT NOT NULL,
+  PRIMARY KEY (`instid`));
+
+
+ALTER TABLE `adwrkshps_trkr`.`workshop_instances` 
+ADD INDEX `wrkshp_name_idx` (`wrkshp_name` ASC),
+ADD INDEX `createdate_idx` (`wrkshp_createdate` ASC),
+ADD INDEX `lastupdate_idx` (`wrkshp_lastupdate` ASC),
+ADD INDEX `teardwnfinish_idx` (`wrkshp_teardwnfinish` ASC),
+ADD INDEX `autotearfinish_idx` (`wrkshp_autotearfinish` ASC),
+ADD INDEX `userid_idx` (`wrkshp_userid` ASC),
+ADD INDEX `username_idx` (`wrkshp_username` ASC),
+ADD INDEX `wrkshp_cat_idx` (`wrkshp_category` ASC),
+ADD INDEX `cloud_cat_idx` (`cloud_category` ASC);
+;
+
+
+

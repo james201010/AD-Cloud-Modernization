@@ -18,7 +18,7 @@ public class ControllerTaskResults implements Serializable {
 	 */
 	private static final long serialVersionUID = 2714734535252736497L;
 	
-	//public ControllerConn controllerConn;
+	public LicenseRule licenseRule;
 	public RbacUser rbacUser;
 	public RbacRole rbacRole;
 	

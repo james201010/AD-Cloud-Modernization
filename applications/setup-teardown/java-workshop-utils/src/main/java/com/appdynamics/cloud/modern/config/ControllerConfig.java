@@ -30,7 +30,7 @@ public class ControllerConfig {
     private String controllerUrlFull;
 
     public String getControllerAccessKey() {
-        return controllerAccessKey;
+        return "";
     }
 
     public void setControllerAccessKey(String controllerAccessKey) {

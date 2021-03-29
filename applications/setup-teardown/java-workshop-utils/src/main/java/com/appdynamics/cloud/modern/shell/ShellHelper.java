@@ -31,6 +31,7 @@ import com.appdynamics.cloud.modern.cloud.CloudHelper;
 import com.appdynamics.cloud.modern.config.CloudAuthConfig;
 import com.appdynamics.cloud.modern.config.ControllerConfig;
 import com.appdynamics.cloud.modern.config.SetupConfig;
+import com.appdynamics.cloud.modern.controller.ControllerTaskResults;
 import com.appdynamics.cloud.modern.utils.StringUtils;
 import com.appdynamics.cloud.modern.vault.WorkshopVault;
 import com.google.gson.Gson;
@@ -228,7 +229,7 @@ public class ShellHelper {
 		return success;
 	}
 	
-	public static boolean launchDBAgent(String uniqueHostId, ControllerConfig controllerConfig, String dbagentHomeDir, String dbagentName, ShellTaskResults shellResults) throws Throwable {
+	public static boolean launchDBAgent(String uniqueHostId, ControllerConfig controllerConfig, String dbagentHomeDir, String dbagentName, ControllerTaskResults connResults, ShellTaskResults shellResults) throws Throwable {
 		
 		boolean success = false;
 		
@@ -265,8 +266,8 @@ public class ShellHelper {
 			commands.add("-Dappdynamics.agent.accountName=" + controllerConfig.getControllerAccount());
 			buff.append(" -Dappdynamics.agent.accountName=" + controllerConfig.getControllerAccount());
 			
-			commands.add("-Dappdynamics.agent.accountAccessKey=" + controllerConfig.getControllerAccessKey());
-			buff.append(" -Dappdynamics.agent.accountAccessKey=" + controllerConfig.getControllerAccessKey());
+			commands.add("-Dappdynamics.agent.accountAccessKey=" + connResults.licenseRule.licenseKey);
+			buff.append(" -Dappdynamics.agent.accountAccessKey=" + connResults.licenseRule.licenseKey);
 			
 			commands.add("-Dappdynamics.agent.maxMetrics=300000");
 			buff.append(" -Dappdynamics.agent.maxMetrics=300000");
@@ -320,7 +321,7 @@ public class ShellHelper {
 		return success;
 	}
 
-	public static void launchSIMAgent(ControllerConfig controllerConfig, String simAgentHomeDir, ShellTaskResults shellResults) throws Throwable {
+	public static void launchSIMAgent(ControllerConfig controllerConfig, String simAgentHomeDir, ControllerTaskResults connResults, ShellTaskResults shellResults) throws Throwable {
 		
 		ProcessBuilder pb;
 		Process p;
@@ -354,8 +355,8 @@ public class ShellHelper {
 		commands.add("-Dappdynamics.agent.accountName=" + controllerConfig.getControllerAccount());
 		buff.append(" -Dappdynamics.agent.accountName=" + controllerConfig.getControllerAccount());
 		
-		commands.add("-Dappdynamics.agent.accountAccessKey=" + controllerConfig.getControllerAccessKey());
-		buff.append(" -Dappdynamics.agent.accountAccessKey=" + controllerConfig.getControllerAccessKey());
+		commands.add("-Dappdynamics.agent.accountAccessKey=" + connResults.licenseRule.licenseKey);
+		buff.append(" -Dappdynamics.agent.accountAccessKey=" + connResults.licenseRule.licenseKey);
 				
 		commands.add("-Dappdynamics.agent.maxMetrics=300000");
 		buff.append(" -Dappdynamics.agent.maxMetrics=300000");

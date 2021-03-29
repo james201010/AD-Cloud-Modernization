@@ -16,6 +16,7 @@ public class TeardownConfig {
 	
 	private String teardownScript;
 	
+	private String licenseRequestId;
 	private Integer userId;
 	private Integer roleId;
 	
@@ -37,6 +38,14 @@ public class TeardownConfig {
 
 	public TeardownConfig() {
 		
+	}
+
+	public String getLicenseRequestId() {
+		return licenseRequestId;
+	}
+
+	public void setLicenseRequestId(String licenseRequestId) {
+		this.licenseRequestId = licenseRequestId;
 	}
 
 	public Integer getUserId() {

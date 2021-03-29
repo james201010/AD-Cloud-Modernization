@@ -38,6 +38,7 @@ import com.appdynamics.cloud.modern.controller.json.ClusterAgentListRequest;
 import com.appdynamics.cloud.modern.controller.json.ClusterAgentListResponse;
 import com.appdynamics.cloud.modern.controller.json.DBCollectorCreateRequest;
 import com.appdynamics.cloud.modern.controller.json.DBCollectorCreateResponse;
+import com.appdynamics.cloud.modern.controller.json.LicenseRuleCreateRequest;
 import com.appdynamics.cloud.modern.controller.json.MachineAgentListRequest;
 import com.appdynamics.cloud.modern.controller.json.MachineAgentListResponse;
 import com.appdynamics.cloud.modern.controller.json.RbacRoleCreateRequest;
@@ -63,22 +64,17 @@ public class AppdController {
 	private CloseableHttpClient client;
 	private String xCsrkToken;
 	
-	private SetupConfig setupConfig;
-	private TeardownConfig teardownConfig;
 
-	private ControllerConfig controllerConfig;
 	private ControllerLoginConfig loginConfig;
     
 
 	public AppdController(ControllerConfig config, ControllerLoginConfig loginConfig) {
 
-		this.controllerConfig = config;
 		this.loginConfig = loginConfig;
 	}
 	
 	
 	public void initClientForSetup(SetupConfig setupConfig) throws Throwable {
-		this.setupConfig = setupConfig;
 		logr = new Logger(AppdController.class.getSimpleName(), setupConfig.isDebugLogging());
 		logr.debug("Initializing Client for Setup");
 		this.globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
@@ -90,7 +86,6 @@ public class AppdController {
 		
 	}
 	public void initClientForTeardown(TeardownConfig teardownConfig) throws Throwable {
-		this.teardownConfig = teardownConfig;
 		logr = new Logger(AppdController.class.getSimpleName());
 		logr.debug("Initializing Client for Teardown");
 		this.globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
@@ -190,6 +185,49 @@ public class AppdController {
 		logr.info("   - Finished Finding Cluster Agents");
 		
 		return resObj;
+	    
+		
+	}
+
+	public int createLicenseRule(LicenseRule rule, ControllerTaskResults taskResults) throws Throwable {
+		
+		HttpPost httpReq = new HttpPost(getControllerBaseUrl() + "/controller/restui/licenseRule/create");
+	    
+	    this.addCommonHeaders(httpReq, true, true);	    
+		
+	    LicenseRuleCreateRequest lrcReq = new LicenseRuleCreateRequest();
+	    
+	    String json = lrcReq.getJsonRequest(rule);
+	    
+	    logr.debug("Creating License Rule JSON Request");
+	    logr.debug(json);
+	    
+	    StringEntity entity = new StringEntity(json);
+	    httpReq.setEntity(entity);
+	    
+	    CloseableHttpResponse response = client.execute(httpReq, context);
+	    
+	    int statusCode = response.getStatusLine().getStatusCode();
+	    logr.debug("HTTP Status: " + statusCode);
+	    
+		String resp = "";
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+        StringBuilder out = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            out.append(line);
+        }			
+		
+        resp = out.toString();
+		reader.close();
+	    
+		//ClusterAgentListResponse resObj = gson.fromJson(resp, ClusterAgentListResponse.class);
+		
+		logr.debug("Creating License Rule JSON Response");
+		logr.debug(resp);
+		
+		
+		return statusCode;
 	    
 		
 	}
@@ -453,6 +491,22 @@ public class AppdController {
 		}
 	    
 	}
+
+	public void deleteLicenseRule(String licenseRequestId) throws Throwable {		
+		
+	    HttpGet httpReq = new HttpGet(getControllerBaseUrl() + "/controller/restui/licenseRule/delete/" + licenseRequestId);
+	 
+	    this.addCommonHeaders(httpReq, true, false);	    
+	    
+	    logr.debug("Deleting License Rule with Id " + licenseRequestId);
+
+	    CloseableHttpResponse response = client.execute(httpReq, context);
+	    
+	    logr.debug("HTTP Status: " + response.getStatusLine().getStatusCode());
+	    
+	    
+	}
+	
 	
 	public void deleteApmApplication(int appId) throws Throwable {		
 		
@@ -1241,13 +1295,13 @@ public class AppdController {
 		
 		// If the login config is passed in, use that. Otherwise, default to previous implementation.
 		String userCredentials = null;
-		if (this.loginConfig != null) {
+		//if (this.loginConfig != null) {
+		
 			userCredentials = this.loginConfig.getControllerUsername() + "@" + this.loginConfig.getControllerAccount() + ":" + this.loginConfig.getControllerPass();
-		} else {
-			//userCredentials = init(Integer.parseInt(init(22/3/2+5*2+3, S).substring(init(22/3/2+5*2+3, S).length()-2)), Z)+"@"+init(Integer.parseInt(init(25/2/2+4*2-1, Q).substring(init(25/2/2+4*2-1, Q).length()-2)), D)+":"+init(Integer.parseInt(init(24/3/2+3*2+2, E).substring(init(24/3/2+3*2+2, E).length()-2)), F);
 			
-			userCredentials = this.loginConfig.getControllerUsername()+"@"+this.loginConfig.getControllerAccount()+":"+this.loginConfig.getControllerPass();
-		}
+		//} else {
+			//userCredentials = this.loginConfig.getControllerUsername()+"@"+this.loginConfig.getControllerAccount()+":"+this.loginConfig.getControllerPass();
+		//}
 	    
 	    byte[] encoded = Base64.encodeBase64(userCredentials.getBytes());
 	    httpReq.setHeader("Authorization", "Basic " + new String(encoded));
