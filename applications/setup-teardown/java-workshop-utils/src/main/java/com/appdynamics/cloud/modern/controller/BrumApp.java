@@ -18,5 +18,11 @@ public class BrumApp implements Serializable {
 	public String appName;
 	public int appId = -1;
 	public String eumKey = null;
+	public boolean updateConfig = false;
+	public String slowThresholdType;
+	public String slowThresholdValue;
+	public String verySlowThresholdType;
+	public String verySlowThresholdValue;
+	
 	
 }

@@ -71,7 +71,7 @@ public class SetupStepsStateHelper implements ApplicationConstants {
 						if (task.getTaskName().equals(te.getTaskName())) {
 							
 							SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
-							logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+							logr.debug(" - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "/" + nextStepTrigger);
 							
 							lastStepTrigger = lastStepTrigger + 10;
 							nextStepTrigger = nextStepTrigger + 10;
@@ -87,7 +87,7 @@ public class SetupStepsStateHelper implements ApplicationConstants {
 					for (Task task : cloudTasks) {
 						
 						SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
-						logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+						logr.debug(" - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "/" + nextStepTrigger);
 						
 						lastStepTrigger = lastStepTrigger + 10;
 						nextStepTrigger = nextStepTrigger + 10;						
@@ -102,7 +102,7 @@ public class SetupStepsStateHelper implements ApplicationConstants {
 					for (Task task : coninitTasks) {
 						
 						SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
-						logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+						logr.debug(" - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "/" + nextStepTrigger);
 						
 						lastStepTrigger = lastStepTrigger + 10;
 						nextStepTrigger = nextStepTrigger + 10;						
@@ -117,7 +117,7 @@ public class SetupStepsStateHelper implements ApplicationConstants {
 					for (Task task : connTasks) {
 						
 						SetupStepsStateHelper.addStepTriggerTags(task, lastStepTrigger, nextStepTrigger);
-						logr.info("  - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "   " + nextStepTrigger);
+						logr.debug(" - Task Step : Task : " + task.getTaskName() + " : " + lastStepTrigger + "/" + nextStepTrigger);
 						
 						lastStepTrigger = lastStepTrigger + 10;
 						nextStepTrigger = nextStepTrigger + 10;						

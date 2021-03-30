@@ -63,10 +63,10 @@ public class AppdControllerHelper {
 	}
 
 	
-	public static ControllerTaskResults createBrumApp(ControllerTaskResults taskResults, String appName) throws Throwable  {
-		logr.info(" - Creating BRUM Application : " + appName);
-		CNTRLR.createBrumApplication(appName, taskResults);
-		logr.info(" - Finished Creating BRUM Application : " + appName);
+	public static ControllerTaskResults createBrumApp(ControllerTaskResults taskResults, BrumApp brumApp) throws Throwable  {
+		logr.info(" - Creating BRUM Application : " + brumApp.appName);
+		CNTRLR.createBrumApplication(brumApp, taskResults);
+		logr.info(" - Finished Creating BRUM Application : " + brumApp.appName);
 		return taskResults;
 	}	
 	

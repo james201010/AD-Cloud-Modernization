@@ -32,6 +32,7 @@ import com.appdynamics.cloud.modern.config.ControllerLoginConfig;
 import com.appdynamics.cloud.modern.config.SetupConfig;
 import com.appdynamics.cloud.modern.config.TeardownConfig;
 import com.appdynamics.cloud.modern.controller.json.ApmAppCreateResponse;
+import com.appdynamics.cloud.modern.controller.json.BrumAppConfigUpdateRequest;
 import com.appdynamics.cloud.modern.controller.json.BrumAppCreateResponse;
 import com.appdynamics.cloud.modern.controller.json.BrumAppsGetResponse;
 import com.appdynamics.cloud.modern.controller.json.ClusterAgentListRequest;
@@ -365,19 +366,16 @@ public class AppdController {
 	    
 	}	
 	
-	public int createBrumApplication(String appName, ControllerTaskResults taskResults) throws Throwable {		
+	public int createBrumApplication(BrumApp brumApp, ControllerTaskResults taskResults) throws Throwable {		
 		
 	    HttpPost httpReq = new HttpPost(getControllerBaseUrl() + "/controller/restui/allApplications/createApplication?applicationType=WEB");
 	 
 	    this.addCommonHeaders(httpReq, true, true);	    
 	    
 	    // {"name":"JRS-Test-Web-App","description":""}
-	    String json = "{\"name\":\"" + appName + "\",\"description\":\"\"}";
+	    String json = "{\"name\":\"" + brumApp.appName + "\",\"description\":\"\"}";
 	    logr.debug("Create BRUM Application JSON Request");
 	    logr.debug(json);
-	    
-	    BrumApp brumApp = new BrumApp();
-	    brumApp.appName = appName;
 	    
 	    StringEntity entity = new StringEntity(json);
 	    httpReq.setEntity(entity);
@@ -412,7 +410,7 @@ public class AppdController {
 				
 				Thread.currentThread().sleep(3000);
 				
-				getBrumAppKey(appName, brumApp);
+				getBrumAppKey(brumApp.appName, brumApp);
 				
 				
 				if (brumApp.appId > -1 && brumApp.eumKey != null && brumApp.eumKey.length() > 5) {
@@ -432,17 +430,35 @@ public class AppdController {
 			
 		}
 		
-				
+		this.updateBrumAppConfig(brumApp, taskResults);		
 		
 		taskResults.brumApps.add(brumApp);
 		
-		// TODO create and call method to update BRUM config with boolean parameter for "useStaticThresholds"
 		
 		logr.debug("BRUM App Name = " + brumApp.appName);
 		logr.debug("BRUM App Id = " + brumApp.appId);
 		logr.debug("BRUM App EUM Key = " + brumApp.eumKey);
 		
 		return brumApp.appId;
+	    
+	}
+	
+	private void updateBrumAppConfig(BrumApp brumApp, ControllerTaskResults taskResults) throws Throwable {
+		
+	    HttpPost httpReq = new HttpPost(getControllerBaseUrl() + "/controller/restui/browserRUMConfig/setSettingsConfig/" + brumApp.appId);
+		 
+	    this.addCommonHeaders(httpReq, true, true);	    		
+	    
+	    String json = BrumAppConfigUpdateRequest.getRequestJson(brumApp);
+	    
+	    StringEntity entity = new StringEntity(json);
+	    httpReq.setEntity(entity);
+	    
+	    CloseableHttpResponse response = client.execute(httpReq, context);
+	    
+	    logr.debug("HTTP Status: " + response.getStatusLine().getStatusCode());
+	    
+	    response.close();
 	    
 	}
 	

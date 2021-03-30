@@ -72,6 +72,13 @@ public interface ApplicationConstants extends Serializable {
 	public static final String VADWRKSHP_EUM_APP_KEY_POST = "@[ADWRKSHP_EUM_APP_KEY_POST]";
 	public static final String VADWRKSHP_EUM_APP_NAME_PFX = "@[ADWRKSHP_EUM_APP_NAME";
 	
+	public static final String VADWRKSHP_EUM_APP_CONF_UPDATE = "@[ADWRKSHP_EUM_APP_CONF_UPDATE]";
+	public static final String VADWRKSHP_EUM_APP_CONF_SLOWT_TYPE = "@[ADWRKSHP_EUM_APP_CONF_SLOWT_TYPE]";
+	public static final String VADWRKSHP_EUM_APP_CONF_SLOWT_VAL = "@[ADWRKSHP_EUM_APP_CONF_SLOWT_VAL]";
+	public static final String VADWRKSHP_EUM_APP_CONF_VSLOWT_TYPE = "@[ADWRKSHP_EUM_APP_CONF_VSLOWT_TYPE]";
+	public static final String VADWRKSHP_EUM_APP_CONF_VSLOWT_VAL = "@[ADWRKSHP_EUM_APP_CONF_VSLOWT_VAL]";
+	
+	
 	public static final String VADWRKSHP_CLOUD_REGION = "@[ADWRKSHP_CLOUD_REGION]";
 	public static final String VADWRKSHP_CLOUD_MODE = "@[ADWRKSHP_CLOUD_MODE]";
 	

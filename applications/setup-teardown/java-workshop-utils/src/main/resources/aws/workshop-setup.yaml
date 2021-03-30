@@ -334,11 +334,11 @@ controllerInitTasks:
       - tagKey: "@[ADWRKSHP_LICENSE_RULE_NBR_APM]"
         tagValue: "24"
       - tagKey: "@[ADWRKSHP_LICENSE_RULE_NBR_MA]"
-        tagValue: "0"
+        tagValue: "8"
       - tagKey: "@[ADWRKSHP_LICENSE_RULE_NBR_SIM]"
-        tagValue: "4"
+        tagValue: "8"
       - tagKey: "@[ADWRKSHP_LICENSE_RULE_NBR_NET]"
-        tagValue: "4"
+        tagValue: "8"
 
 
 controllerTasks:
@@ -366,16 +366,6 @@ controllerTasks:
     inputTags:
       - tagKey: "@[ADWRKSHP_EUM_APP_NAME_PRE]"
         tagValue: "@[ADWRKSHP_LABUSER_KEY]-AD-Fin-PreMod-Web"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_UPDATE]"
-        tagValue: "true"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_SLOWT_TYPE]"
-        tagValue: "STATIC_MS"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_SLOWT_VAL]"
-        tagValue: "1800"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_VSLOWT_TYPE]"
-        tagValue: "STATIC_MS"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_VSLOWT_VAL]"
-        tagValue: "2600"
   
     templateTargets:
       - templateName: "docker-app-conf"
@@ -426,16 +416,6 @@ controllerTasks:
     inputTags:
       - tagKey: "@[ADWRKSHP_EUM_APP_NAME_POST]"
         tagValue: "@[ADWRKSHP_LABUSER_KEY]-AD-Fin-PostMod-Web"  
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_UPDATE]"
-        tagValue: "true"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_SLOWT_TYPE]"
-        tagValue: "STANDARD_DEVIATION"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_SLOWT_VAL]"
-        tagValue: "3"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_VSLOWT_TYPE]"
-        tagValue: "STANDARD_DEVIATION"
-      - tagKey: "@[ADWRKSHP_EUM_APP_CONF_VSLOWT_VAL]"
-        tagValue: "4"
         
     templateTargets:
     
@@ -501,7 +481,7 @@ controllerTasks:
 
 
   - taskType: "CONTROLLER_TASK_SET_DASHBOARD_PERMISSIONS"
-    taskName: "set-dashboard-access-loancomp"
+    taskName: "set-dashboard-access-loancomp-1"
     inputTags:
       - tagKey: "@[ADWRKSHP_DASHBOARD_ID]"
         tagValue: "376039"    
@@ -513,6 +493,33 @@ controllerTasks:
         tagValue: "false"
       - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_SHARE]"
         tagValue: "false"    
+
+#  - taskType: "CONTROLLER_TASK_SET_DASHBOARD_PERMISSIONS"
+#    inputTags:
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ID]"
+#        tagValue: "1603"    
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_VIEW]"
+#        tagValue: "true"    
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_EDIT]"
+#        tagValue: "false"
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_DELETE]"
+#        tagValue: "false"
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_SHARE]"
+#        tagValue: "false"    
+
+
+#  - taskType: "CONTROLLER_TASK_SET_DASHBOARD_PERMISSIONS"
+#    inputTags:
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ID]"
+#        tagValue: "1604"    
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_VIEW]"
+#        tagValue: "true"    
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_EDIT]"
+#        tagValue: "false"
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_DELETE]"
+#        tagValue: "false"
+#      - tagKey: "@[ADWRKSHP_DASHBOARD_ACTION_SHARE]"
+#        tagValue: "false"    
 
 
  # !!!! Ensure that this is the last controller task in the list of

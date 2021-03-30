@@ -1141,25 +1141,61 @@ public class ADWorkshopUtils implements ApplicationConstants {
 
 			try {
 				Tag brumTag = null;
+				BrumApp brumApp = new BrumApp();
 				
 				List<Tag> inTags = task.getInputTags();
+				
 				for (Tag tag : inTags) {
 					if (tag.getTagKey().startsWith(VADWRKSHP_EUM_APP_NAME_PFX)) {
 						brumTag = tag;
 					}
 					
+					if (tag.getTagKey().equals(VADWRKSHP_EUM_APP_CONF_UPDATE)) {
+						if (tag.getTagValue() != null && tag.getTagValue().equals("true")) {
+							brumApp.updateConfig = true;
+						}
+					}
+										
+					if (tag.getTagKey().equals(VADWRKSHP_EUM_APP_CONF_SLOWT_TYPE)) {
+						if (tag.getTagValue() != null) {
+							brumApp.slowThresholdType = tag.getTagValue();
+						}
+					}
+					
+					if (tag.getTagKey().equals(VADWRKSHP_EUM_APP_CONF_SLOWT_VAL)) {
+						if (tag.getTagValue() != null) {
+							brumApp.slowThresholdValue = tag.getTagValue();
+						}
+					}
+					
+					if (tag.getTagKey().equals(VADWRKSHP_EUM_APP_CONF_VSLOWT_TYPE)) {
+						if (tag.getTagValue() != null) {
+							brumApp.verySlowThresholdType = tag.getTagValue();
+						}
+					}
+					
+					if (tag.getTagKey().equals(VADWRKSHP_EUM_APP_CONF_VSLOWT_VAL)) {
+						if (tag.getTagValue() != null) {
+							brumApp.verySlowThresholdValue = tag.getTagValue();
+						}
+					}
+					
+					
 				}
 			
-				String brumTagVal = getInputTagValue(brumTag, connResults.rbacUser.userName);
-				AppdControllerHelper.createBrumApp(connResults, brumTagVal);
+				String brumAppName = getInputTagValue(brumTag, connResults.rbacUser.userName);
+				brumApp.appName = brumAppName;
 				
-				processTemplateTargets(task.getTemplateTargets(), templates, brumTag.getTagKey(), brumTagVal);
 				
-				for (BrumApp brumApp : connResults.brumApps) {
-					if (brumApp.appName.equals(brumTagVal)) {
+				AppdControllerHelper.createBrumApp(connResults, brumApp);
+				
+				processTemplateTargets(task.getTemplateTargets(), templates, brumTag.getTagKey(), brumAppName);
+				
+				for (BrumApp rumApp : connResults.brumApps) {
+					if (rumApp.appName.equals(brumAppName)) {
 						
-						processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_EUM_APP_KEY_PRE, brumApp.eumKey);
-						processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_EUM_APP_KEY_POST, brumApp.eumKey);
+						processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_EUM_APP_KEY_PRE, rumApp.eumKey);
+						processTemplateTargets(task.getTemplateTargets(), templates, VADWRKSHP_EUM_APP_KEY_POST, rumApp.eumKey);
 					
 					}
 					
